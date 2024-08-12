@@ -4,7 +4,10 @@
 // 最终推出，枚举每一次操作的数字，Bob如果不包含就Alice win
 // 我们需要维护，每次Bob删除的数字之后剩下的两个数, 顺序枚举和倒叙枚举各一次就包含了全部情况
 // 我们删除左端的数和右端的数字是不会影响b数组的的情况，因为A1和An互不相同，B1和Bn要删除的数字与A保持一直，所以改变顺序不会影响他的本质。
-
+// 假设是Alice会赢得情况
+// 要么是顺序的，要么是反转的，然后我们就可以根据性质证出来
+// 假设删除第一个时，A对应位置在n那么bn的位置一定在1的位置。
+// 假设鲍勃会赢，的情况。
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -16,31 +19,11 @@ void solve() {
     vector<int> b(n + 1);
     for(int i = 1; i <= n; i ++)    cin >> a[i];
     for(int i = 1; i <= n; i ++)    cin >> b[i];
-    int t1 = 1, t2 = 1, t3 = n;
-    while(t1 <= n){
-        if(a[t1] == b[t2])
-            t2 ++;
-        else if(a[t1] == b[t3])
-            t3 --;
-        else{
-            cout << "Alice\n";
-            return ;
-        }
-        t1 ++;
+    if (a == b || a == vector(b.rbegin(), b.rend())) {
+        std::cout << "Bob\n";
+    } else {
+        std::cout << "Alice\n";
     }
-    t1 = n, t2 = n, t3 = 1;
-    while(t1 >= 1){
-        if(a[t1] == b[t2])
-            t2 --;
-        else if(a[t1] == b[t3])
-            t3 ++;
-        else{
-            cout << "Alice\n";
-            return ;
-        }
-        t1 --;
-    }
-    cout << "Bob\n";
 }
 
 int main() {
