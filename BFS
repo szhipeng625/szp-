@@ -1,0 +1,119 @@
+// bfs 传统规则和通过自定义规则添加方向
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    // 初始化二维数组 maze，并读取输入
+    vector<vector<int>> maze(n, vector<int>(n));
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            cin >> maze[i][j];
+        }
+    }
+
+    const int INF = 1e9;
+    vector<vector<int>> dist(n, vector<int>(n, INF));
+    dist[0][0] = 0;
+
+    deque<pair<int, int>> q;
+    q.push_back({0, 0});
+
+    int dx[4] = {-1, 1, 0, 0};  // 上下左右
+    int dy[4] = {0, 0, -1, 1};  // 上下左右
+
+    while(!q.empty()) {
+        int x = q.front().first;
+        int y = q.front().second;
+        q.pop_front();
+
+        // 标准的上下左右 BFS 移动
+        for(int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx >= 0 && ny >= 0 && nx < n && ny < n && maze[nx][ny] == 0 && dist[nx][ny] > dist[x][y] + 1) {
+                dist[nx][ny] = dist[x][y] + 1;
+                q.push_back({nx, ny});
+            }
+        }
+
+        // 虫洞传送逻辑
+
+        // 下方的虫洞
+        if(x - 1 < 0 || maze[x - 1][y] == 1){
+            int t1 = -1;
+            for (int i = x; i < n; i ++) {
+                if (maze[i][y] == 1) {
+                    t1 = i - 1;
+                    break;
+                }
+            }
+            if (t1 == -1) t1 = n - 1;
+            if (t1 != x && dist[t1][y] > dist[x][y] + 1) {
+                dist[t1][y] = dist[x][y] + 1;
+                q.push_back({t1, y});
+            }
+        }
+
+        // 向左的虫洞
+        if(y - 1 < 0 || maze[x][y - 1] == 1){
+            int t1 = -1;
+            for (int i = y; i < n; i ++) {
+                if (maze[x][i] == 1) {
+                    t1 = i - 1;
+                    break;
+                }
+            }
+            if (t1 == -1) t1 = n - 1;
+            if (t1 != y && dist[x][t1] > dist[x][y] + 1) {
+                dist[x][t1] = dist[x][y] + 1;
+                q.push_back({x, t1});
+            }
+        }
+        //向zuo
+        if(y + 1 >= n || maze[x][y + 1] == 1){
+            int t1 = -1;
+            for (int i = y; i >= 0; i --) {
+                if (maze[x][i] == 1) {
+                    t1 = i + 1;
+                    break;
+                }
+            }
+            if (t1 == -1) t1 = 0;
+            if (t1 != y && dist[x][t1] > dist[x][y] + 1) {
+                dist[x][t1] = dist[x][y] + 1;
+                q.push_back({x, t1});
+            }
+        }
+        //向上
+        if(x + 1 >= n || maze[x + 1][y] == 1){
+            int t1 = -1;
+            for (int i = x; i >= 0; i --) {
+                if (maze[i][y] == 1) {
+                    t1 = i + 1;
+                    break;
+                }
+            }
+            if (t1 == -1) t1 = 0;
+            if (t1 != x && dist[t1][y] > dist[x][y] + 1) {
+                dist[t1][y] = dist[x][y] + 1;
+                q.push_back({t1, y});
+            }
+        }
+    }
+    int result = dist[n-1][n-1];
+    if(result == INF)
+        cout << -1 << endl;
+    else
+        cout << result << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    solve();
+    return 0;
+}
