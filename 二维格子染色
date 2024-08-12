@@ -1,0 +1,27 @@
+// 二维网格里间隔第(i, j), (i, j + k), (i, j + 2 * k), (i + k, j), (i + 2 * k, j) ...
+// 数字相同，我们要找出二维填充二维格子最小的数字。
+// 我们可以推出((i, j + 1), (i, j + 1 + k)), ((i, j + 2), (i, j + 2 + k)) ... ((i, j + k - 1), (i, j + k - 1 + k))是相等的
+// 我们能推出，假设格子无限长，每一行只需要k种数字
+// 来看纵坐标的话，那他的最多也是需要k种数字
+// 至此我们就能推出最终答案
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void solve() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    cout << min(n, k) * min(m, k) << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for(int i = 0; i < n; i ++)
+        solve();
+    return 0;
+}
+
