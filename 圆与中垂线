@@ -1,0 +1,58 @@
+// 起点和终点之间的路径长度，如果某一个圆在在他到底终点之前就覆盖到终点，那他一定不会成立。
+// 接下来我们考虑是否存在一个路径在到达终点之前。
+// 我们考虑最快情况，两点之间直线最短，圆的半径和路程一样长
+// 我们在两点之间做一条中垂线，这样我们能够很好的模拟出路径的情况
+// 当中垂线上的一点和起点一起到达终点时，这三个点是一个全等三角形，所以当起到到达一半路程时，这个点肯定不会覆盖他的路径
+// 所以我们可以得出结论
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define fi first
+#define se second 
+typedef long long ll;
+
+bool check(ll x, ll y, ll t, ll xx, ll yy) {
+    ll t1 = (xx - x);
+    ll t2 = (yy - y);
+    ll res = (t1 * t1) + t2 * t2;
+    if (t1 * t1 + t2 * t2 <= t)
+        return true;
+    // cout << res << " " << t << endl;
+    return false;
+}
+
+void solve() {
+    ll n;
+    cin >> n;
+    vector<pair<ll, ll>> p(n);
+    for (ll i = 0; i < n; i++) {
+        cin >> p[i].fi >> p[i].se;
+    }
+    ll x1, y1, x2, y2;
+    cin >> x1 >> y1 >> x2 >> y2;
+
+    ll x = (x1 - x2) * (x1 - x2);
+    ll y = (y1 - y2) * (y1 - y2);
+
+    ll t = x + y;
+    for (ll i = 0; i < n; i++) {
+        if (check(p[i].fi, p[i].se, t, x2, y2)) {
+            cout << "NO" << endl;
+            return;
+        }
+    }
+    cout << "YES" << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    ll t;
+    cin >> t;
+    for (ll i = 0; i < t; i++) {
+        solve();
+    }
+    return 0;
+}
