@@ -1,0 +1,41 @@
+// 我们采用贪心的方法，将最大值全减去，以及再将最大值/k再+1，枚举出每一种情况，我们不知道哪一种情况最优，所以我们只能暴力枚举所有情况取最小值
+// 并用最大堆来维护其性质
+
+#include <bits/stdc++.h>
+
+using u32 = unsigned;
+using i64 = long long;
+using u64 = unsigned long long;
+typedef i64 ll;
+using namespace std;
+
+void solve() {
+    ll n, m;
+    cin >> n >> m;
+    priority_queue<ll> a;
+    ll res = 0;
+    for (ll i = 0; i < n; i++){
+        ll x;
+        cin >> x;
+        a.push(x);
+        res = max(x, res);
+    }
+    ll ans = 0;
+    while (a.top() > 0) {
+        ll t = a.top();
+        a.pop();
+        a.push(t / m);
+        ans ++;
+        res = min(res, ans + a.top());
+    }
+    cout << res << endl;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    solve();
+
+    return 0;
+}
