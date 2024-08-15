@@ -1,0 +1,43 @@
+// 求q/p mod M = q^(mod - 2), 求模逆
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+const ll mod = 998244353;
+
+// 快速幂算法，计算 a^k % mod
+ll qmi(ll a, ll k) {
+    ll res = 1;
+    while (k) {
+        if (k & 1) res = (res * a) % mod;
+        a = (a * a) % mod;
+        k >>= 1;
+    }
+    return res;
+}
+
+void solve() {
+    int n;
+    cin >> n;
+    ll tot = 0;
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        tot = (tot + x) % mod; // 确保总和在模下计算
+    }
+    // 计算 n 的模逆
+    ll p = qmi(n, mod - 2);
+    // 计算结果
+    ll res = (tot * p) % mod;
+    cout << res << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    solve();
+    return 0;
+}
+    
