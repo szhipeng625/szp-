@@ -1,0 +1,45 @@
+// 再矩阵中将曼哈顿距离分为两x和y两部分，我们通过把所有x的坐标存放到一个数组里
+// 能够发现第i个数到前面所有距离之和就等于，a[i] * i - presum; 因为每一次都是将x - a[0], 然后总共有i个x - pre = presum
+// 普通的前缀和
+#include <bits/stdc++.h>
+
+using u32 = unsigned;
+using i64 = long long;
+using u64 = unsigned long long;
+typedef i64 ll;
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    map<string, int> cnt;
+    int tot = 0;
+    for(int i = 0; i < n; i ++){
+        string s;
+        cin >> s;
+        cnt[s] ++;
+        tot ++;
+    }
+    int m = 0;
+    string res;
+    for(auto [s, y] : cnt)
+        if(y > m){
+            res = s;
+            m = y;
+        }
+    if(m * 2 > tot)
+        cout << res << endl;
+    else
+        cout << "uh-oh" << endl;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    // int n;
+    // cin >> n;
+    // for (int i = 0; i < n; i++)
+        solve();
+
+    return 0;
+}
