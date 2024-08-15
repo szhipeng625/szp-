@@ -1,0 +1,33 @@
+// 求 q(n * m) % mod =  q^(mod - 1)
+// 利用欧拉定理，当mod是质数
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+const ll MOD = 998244353;
+
+// 快速幂函数，计算 (base^exponent) % mod
+ll quickPower(ll base, ll exponent) {
+    ll res = 1;
+    while (exponent > 0) {
+        if (exponent & 1) {
+            res = res * base % MOD;
+        }
+        base = base * base % MOD;
+        exponent >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    ll n, m;
+    cin >> n >> m;
+
+    ll exponent = n % (MOD - 1) * (m % (MOD - 1)) % (MOD - 1);  // (n * m) % (MOD-1) to reduce the size of exponent
+    ll total = quickPower(2, exponent);  // Calculate 2^(n*m) % MOD
+
+    cout << total << endl;  // Output the result
+    return 0;
+}
