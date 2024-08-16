@@ -1,0 +1,76 @@
+// 数据范围小，直接枚举+二分-
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+void solve() {
+    ll n, q;
+    cin >> n >> q;
+    unordered_map<string, vector<ll>> a;
+    vector<string> s(n + 1);
+
+    for(ll i = 1; i <= n; i++) {
+        string ch;
+        cin >> ch;
+        if(ch[1] < ch[0])
+            swap(ch[0], ch[1]);
+        a[ch].push_back(i);
+        s[i] = ch;
+    }
+
+    while (q--) {
+        ll x, y;
+        cin >> x >> y;
+        if (y < x) 
+            swap(x, y);
+
+        string s1 = s[x];
+        string s2 = s[y];
+
+        if (s1[0] == s2[0] || s1[0] == s2[1] || s1[1] == s2[0] || s1[1] == s2[1]) {
+            cout << y - x << endl;
+        } else {
+            ll res = LLONG_MAX;
+
+            for (ll j = 0; j < 2; j++) {
+                for (ll k = 0; k < 2; k++) {
+                    string tmp = "";
+                    tmp += s1[j];
+                    tmp += s2[k];
+                    if(tmp[1] < tmp[0])
+                        swap(tmp[0], tmp[1]);
+
+                    if(a.count(tmp)) {
+                        auto &indices = a[tmp];
+    
+                        auto it_low = lower_bound(indices.begin(), indices.end(), y);
+
+                        if(it_low != indices.end()) 
+                            res = min(res, (ll)(abs(*it_low - x) + abs(*it_low - y)));
+
+                        if(it_low != indices.begin()) {
+                            --it_low;
+                            res = min(res, (ll)(abs(*it_low - x) + abs(*it_low - y)));
+                        }
+                    }
+                }
+            }
+            if(res == LLONG_MAX) 
+                cout << -1 << endl;
+            else 
+                cout << res << endl;
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    ll t;
+    cin >> t;
+    while(t--) {
+        solve();
+    }
+    return 0;
+}
