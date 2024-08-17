@@ -1,0 +1,82 @@
+// 链表 + 并查集 + 模拟 + 映射
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+  cin.tie(nullptr)->sync_with_stdio(false);
+  cout << fixed << setprecision(20);
+  int n, m;
+  cin >> n >> m;
+  vector<string> s(n);
+  for (auto& si : s) cin >> si;
+  // row, col, above/below/left/right
+  vector<int> p(n * m * 4, -1), f(n * m * 4, -1);
+  vector<int> di = {1, -1, 0, 0};
+  vector<int> dj = {0, 0, 1, -1};
+  vector<vector<int>> tr(128);
+  tr['|'] = {0, 1, 3, 2};
+  tr['-'] = {1, 0, 2, 3};
+  tr['/'] = {3, 2, 1, 0};
+  tr['\\'] = {2, 3, 0, 1};
+  for (int i = 0; i < n; i += 1)
+    for (int j = 0; j < m; j += 1)
+      for (int k = 0; k < 4; k += 1) {
+        int pi = i + di[k], pj = j + dj[k];
+        if (pi < 0 or pi >= n or pj < 0 or pj >= m) continue;
+        int u = pi * m * 4 + pj * 4 + k, v = i * m * 4 + j * 4 + tr[s[i][j]][k];
+        p[u] = v;
+        if (u % 4 != v % 4) f[u] = i * m + j;
+      }
+  vector<int> ans(n * m * 4);
+  vector<int> st(n * m * 4, 0);
+  vector<int> count(n * m, -1);
+  for (int i : p)
+    if (i != -1) st[i] = 1;
+  for (int i = 0; i < n * m * 4; i += 1)
+    if (st[i] == 0) {
+      vector<int> ph;
+      for (int j = i; j != -1; j = p[j]) {
+        st[j] = 2;
+        ph.push_back(j);
+      }
+      int c = 0;
+      for (int j = (int)ph.size() - 1; j >= 0; j -= 1) {
+        if (f[ph[j]] != -1) {
+          c += count[f[ph[j]]] != i;
+          count[f[ph[j]]] = i;
+        }
+        ans[ph[j]] = c;
+      }
+    }
+  for (int i = 0; i < n * m * 4; i += 1)
+    if (st[i] != 2) {
+      vector<int> ph;
+      for (int j = i; st[j] != 2; j = p[j]) {
+        st[j] = 2;
+        ph.push_back(j);
+      }
+      int c = 0;
+      for (int j : ph) {
+        if (f[j] != -1) {
+          c += count[f[j]] != i;
+          count[f[j]] = i;
+        }
+      }
+      for (int j : ph) ans[j] = c;
+    }
+  int q;
+  cin >> q;
+  vector<int> qs(q);
+  for (int& qi : qs) {
+    int i, j;
+    string s;
+    cin >> i >> j >> s;
+    qi = ((i - 1) * m + j - 1) * 4;
+    if (s == "below") qi += 1;
+    if (s == "left") qi += 2;
+    if (s == "right") qi += 3;
+    cout << ans[qi] << "\n";
+  }
+}
