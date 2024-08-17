@@ -1,0 +1,38 @@
+// 当前状态第0个和第1个与上一个状态有关，我们得到上一个状态然后当前状态如果是R，那么就++，如果是W，那就是0，当0和1都是R的时候，我们要做一下比较并记录最终答案
+#include <bits/stdc++.h>
+
+using i64 = long long;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n;
+    std::cin >> n;
+    
+    std::string s[2];
+    std::cin >> s[0] >> s[1];
+    
+    std::array<int, 2> dp {};
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        if (s[0][i] == 'R') {
+            dp[0]++;
+        } else {
+            dp[0] = 0;
+        }
+        if (s[1][i] == 'R') {
+            dp[1]++;
+        } else {
+            dp[1] = 0;
+        }
+        if (s[0][i] == 'R' && s[1][i] == 'R') {
+            dp = {std::max(dp[0], dp[1] + 1), std::max(dp[1], dp[0] + 1)};
+        }
+        ans = std::max({ans, dp[0], dp[1]});
+    }
+    ans = std::max(0, ans - 1);
+    std::cout << ans << "\n";
+    
+    return 0;
+}
