@@ -1,0 +1,52 @@
+// 利用前缀和公式推出最终答案
+
+#include<bits/stdc++.h>
+
+using  namespace std;
+typedef long long ll;
+#define x first
+#define y second
+void solve(){
+    int n, lx, ly;
+    string s;
+    cin >> n >> lx >> ly;
+    cin >> s;
+    map<char, pair<int, int>> m;
+    m['W'] = {0, 1};
+    m['S'] = {0, -1};
+    m['D'] = {1, 0};
+    m['A'] = {-1, 0};
+    vector<pair<int, int>> pre(n + 1);
+    for(int i = 1; i <= n; i ++){
+        pre[i].x = pre[i - 1].x;
+        pre[i].x += m[s[i - 1]].x;
+        pre[i].y = pre[i - 1].y;
+        pre[i].y += m[s[i - 1]].y;
+        // cout << pre[i].x << " " << pre[i].y << endl;
+    }
+    ll res = 0;
+    map<pair<int, int>, int> idx;
+    for(int i = n; i >= 0; i --){
+        idx[pre[i]] = i;
+        if(idx.count({pre[i].x + lx, pre[i].y + ly})){
+            int j = idx[{pre[i].x + lx, pre[i].y + ly}];
+            j = max(j, i + 1); // 排除 是空的情况
+            // a[j] - a[i - 1] = （x, y)
+            // a[j] = (x, y) + a[i - 1]'
+            // 有可能存在 j = j 的情况，那么此条件不存在
+            res += (n - j + 1);
+            
+        }
+    }
+    cout << res << endl;
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+	// int n;
+	// cin >> n;
+	// for(int i = 0; i < n; i ++)
+		solve();
+	return 0;
+}
