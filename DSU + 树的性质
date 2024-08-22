@@ -1,0 +1,74 @@
+// 首秀，我们应该确定我们要研究的目标，是能否构建一个生成树，是基于所有的科能，所以我们应该通过所有可能再来研究特定的生成树
+// 然后，我们看一下生成树，和总的之间有什么关系，我们一开始是肯定用，dsu的，因为概率是1/联通块总数，dsu可以快速求出
+// 但是我们需要确定唯一的一颗树，那么，假设如果有连接，任选两个点，两个大集合里
+// 概率只能通过ai和bi来求，所以我们要找到ci的di与ai，bi有什么关系，对于，a[i]和b[i]， 他肯定是能够生成一棵树的，我们就只需要判断它能不能生成那个树
+// 如果faa[fa[ai]]和fa[bi]有连接 或者反过来，我们根据性质，如果u,v 之间右边，那末一定实在一个连通块里的，所以就是fa[faa[u]] == y 或者是另一种情况
+// 概率就是 两个1/fx和1/fx连通块的大小，
+
+#include<bits/stdc++.h>
+using namespace std;
+ 
+using ll = long long;
+constexpr int MOD = 998244353;
+const int N = 1e6 + 5;
+int fa[N] , faa[N] , dep[N];
+ll cnt[N];
+int find(int x) {
+	return (x == fa[x] ? x : (fa[x] = find(fa[x])));
+}
+void merge(int x , int y) {
+	x = find(x) , y = find(y);
+	if(x == y) return;
+	if(dep[x] < dep[y]) {
+		swap(x , y);
+	}
+	cnt[y] += cnt[x];
+	fa[x] = y;
+}
+ll power(ll x , ll y = MOD - 2) {
+	ll ans = 1;
+	while(y) {
+		if(y & 1) ans = ans * x % MOD;
+		x = x * x % MOD;
+		y >>= 1;
+	}
+	return ans;
+}
+vector<int> G[N];
+void dfs(int now , int fa , int d) {
+	dep[now] = d;
+	for(auto it : G[now]) {
+		if(it == fa) continue;
+		faa[it] = now;
+		dfs(it , now, d + 1);
+	}
+}
+int main(){
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	faa[1] = 1;
+	for(int i = 1 ; i < N ; ++i) fa[i] = i , cnt[i] = 1;
+	int n;
+	cin >> n;
+	vector<pair<int , int> > op(n - 1);
+	for(auto &[x , y] : op) cin >> x >> y;
+	for(int i = 1 ; i <= n - 1 ; ++i) {
+		int x , y;
+		cin >> x >> y;
+		G[x].emplace_back(y);
+		G[y].emplace_back(x);
+	}
+	dfs(1 , -1 , 1);
+	ll ans = 1;
+	for(auto [x , y] : op) {
+		x = find(x) , y = find(y);
+		if(find(faa[x]) != y && find(faa[y]) != x) {
+			cout << 0 << '\n';
+			return 0;
+		}
+		ans *= (cnt[x] * cnt[y]) % MOD;
+		ans %= MOD;
+		merge(x , y);
+	}
+	cout << power(ans) << '\n';
+}
