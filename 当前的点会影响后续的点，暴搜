@@ -1,0 +1,55 @@
+// 对于能走到的每一个点都会影响后面的点，所以利用这个性质，我们可以推断出要利用暴搜来解决问题，由于网格相当麻烦，浪费区间，所以我们可以采取hash来标记标记的点
+// 每一个点第一次走的时候有两种可能，当第二次走的时候就必须对前面走过的点的状态进行延续
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+string s;
+map<pair<int, int>, int> q;
+set<pair<int, int>> res;
+
+void dfs(int u, int a, int b){
+    if(u == n){
+		res.insert({a, b});
+		return ;
+	}
+    int x = a, y = b;
+    if(s[u] == 'L')
+        x --;
+    else if(s[u] == 'R')
+        x ++;
+    else if(s[u] == 'D')
+        y --;
+    else if(s[u] == 'U')
+        y ++;
+    if(q[{x, y}] == 0){
+        q[{x, y}] = 1;
+        dfs(u + 1, x, y);
+        q[{x, y}] = -1;
+        dfs(u + 1, a, b);
+        q[{x, y}] = 0;
+    }else if(q[{x, y}] == -1){
+        dfs(u + 1, a, b);
+    }else 
+        dfs(u + 1, x, y);
+    return ;
+}
+
+void solve() {
+    cin >> n >> s;
+    q[{0, 0}] = 1;
+    dfs(0, 0, 0);
+    cout << res.size() << '\n';
+	for(auto [x, y] : res){
+		cout << x << ' ' << y << '\n';
+	}
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    solve();
+    return 0;
+}
