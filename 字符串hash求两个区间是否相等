@@ -1,0 +1,53 @@
+// 利用两个素数防止hash冲突
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef unsigned long long ULL;
+const int N = 600010;
+const int P1 = 13331, P2 = 10007; // 使用两个不同的质数
+const ULL MOD1 = 1e9 + 7, MOD2 = 1e9 + 9; // 使用两个大素数进行模运算
+
+char str[N];
+ULL h1[N], p1[N], h2[N], p2[N];
+
+ULL get1(int l, int r) {
+    return (h1[r] - h1[l - 1] * p1[r - l + 1] % MOD1 + MOD1) % MOD1;
+}
+
+ULL get2(int l, int r) {
+    return (h2[r] - h2[l - 1] * p2[r - l + 1] % MOD2 + MOD2) % MOD2;
+}
+
+int main()
+{
+    scanf("%s", str + 1);
+    int n = strlen(str + 1);
+    
+    p1[0] = p2[0] = 1;
+    
+    for (int i = 1; i <= n; i++)
+    {
+        h1[i] = (h1[i - 1] * P1 + str[i]) % MOD1;
+        p1[i] = p1[i - 1] * P1 % MOD1;
+
+        h2[i] = (h2[i - 1] * P2 + str[i]) % MOD2;
+        p2[i] = p2[i - 1] * P2 % MOD2;
+    }
+
+    int t = (n + 1) / 2;
+    for (int i = t; i > 1; i--)
+    {
+        int len = n - i + 1;
+        if (get1(1, len) == get1(i, n) && get2(1, len) == get2(i, n))
+        {
+            cout << "YES\n";
+            cout.write(str + 1, len);
+            return 0;
+        }
+    }
+
+    cout << "NO\n";
+    return 0;
+}
