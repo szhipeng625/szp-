@@ -1,0 +1,55 @@
+// 博弈论，判断先手后手，只有当根节点是?,通过非叶结点可以转移，使结果最大，之后当两个状态相等时，需要转移
+#include<bits/stdc++.h>
+
+using namespace std;
+
+void solve(){
+    int n;
+    cin >> n;
+    vector<vector<int>> q(n);
+    for(int i = 1; i < n; i ++){
+        int u, v;
+        cin >> u >> v;
+        u --;
+        v --;
+        q[u].push_back(v);
+        q[v].push_back(u);
+    }
+    string s;
+    cin >> s;
+    int cnt = 0, cnt2 = 0;
+    int b[2] = {0};
+    function<void(int, int)> dfs = [&](int u, int fa) -> void{
+        int len = q[u].size();
+        if(len == 1 && u != 0){
+            if(s[u] != '?') b[(s[u] - '0')] ++;
+            else cnt ++;
+        }else{
+            if(s[u] == '?' && u != 0) cnt2 ++;
+            for(auto &v : q[u]){
+                if(v == fa) continue;
+                dfs(v, u);
+            }
+        }
+    };
+    dfs(0, -1);
+    if(s[0] != '?'){
+        cout << b[(s[0] - '0') ^ 1] + (cnt + 1) / 2 << endl;
+    }else{
+        int t1 = max(b[0], b[1]) + cnt / 2;
+        if(cnt2 & 1 && b[0] == b[1])
+            t1 = max(t1, b[0] + (1 + cnt) / 2);
+        cout << t1 << endl;
+    }
+
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for(int i = 0; i < n;  i ++)
+        solve();
+    return 0;
+}
