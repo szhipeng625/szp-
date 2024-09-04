@@ -1,0 +1,67 @@
+dp,每个物品只选一次，得到的最大值
+// 首先应该考虑每个点都能到达多少，所有和基本上都是相等的
+#include<bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    int maxa = 0;
+    int maxb = 0;
+    vector<int> A(n), B(n);
+    for(int i = 0; i < n; i ++){
+        int l;
+        cin >> l;
+        vector<int> cnt(l + 2);
+        for(int j = 0; j < l; j ++){
+            int x;
+            cin >> x;
+            if(x <= l + 1)
+                cnt[x] ++;
+        }
+        int a = 0;
+        while(cnt[a] > 0)
+            a ++;
+        maxa = max(maxa, a);
+        int b = a + 1;
+        while(cnt[b] > 0)
+            b ++;
+        maxb = max(maxb, b);
+        A[i] = a;
+        B[i] = b;
+    }
+    vector<int> cnt(maxb + 1);
+    for(int i = 0; i < n; i ++)
+        cnt[A[i]] ++;
+    vector<vector<int>> adj(maxb + 1);
+    for(int i = 0; i < n; i ++)
+        adj[A[i]].push_back(B[i]);
+    vector<int> dp(maxb + 1);
+    // 从大到小递推
+    for(int x = maxb; x >= 0; x --){
+        dp[x] = x;
+        for(auto y : adj[x])
+            dp[x] = max(dp[x], dp[y]);
+        if(cnt[x] > 1)
+            maxa = max(maxa, dp[x]);
+    }
+    ll ans = 0;
+    for(int i = 0; i <= maxb && i <= m; i ++)
+        ans += max(dp[i], maxa);
+    if(maxb < m)
+        ans += 1ll * (maxb + 1 + m) * (m - maxb) / 2;
+    cout << ans << endl;
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for(int i = 0; i < n; i ++)
+        solve();
+    return 0;
+}
